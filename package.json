@@ -1,0 +1,21 @@
+{
+  "name": "axel-query",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "[test] basic": "node tests/basic.test.js",
+    "[test] express": "node tests/express.test.js",
+    "[test] koa": "node tests/koa.test.js"
+  },
+  "author": "Axel",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "express": "^4.17.1",
+    "koa": "^2.13.1",
+    "koa-json-body": "^5.3.0",
+    "koa-router": "^10.0.0",
+    "node-fetch": "^2.6.1"
+  }
+}
