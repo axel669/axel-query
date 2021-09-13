@@ -6,13 +6,12 @@ const json = require("koa-json-body")
 
 const aql = require("../koa")
 const engine = require("../index.js")
-const {userSearch, seqQuery} = require("./test.config")
+const {paraQuery} = require("./test.config")
 
 const server = new koa()
 const routes = new router()
 
-const service = engine()
-service.register(userSearch)
+const service = engine(__dirname, "handlers")
 
 routes.post(
     "/aql",
@@ -28,7 +27,7 @@ server.listen(
             "http://localhost:1338/aql",
             {
                 method: "POST",
-                body: JSON.stringify(seqQuery),
+                body: JSON.stringify(paraQuery),
                 headers: {
                     "content-type": "application/json"
                 }

@@ -3,10 +3,9 @@ const fetch = require("node-fetch")
 
 const aql = require("../express")
 const engine = require("../index.js")
-const {userSearch, seqQuery} = require("./test.config")
+const {seqQuery} = require("./test.config")
 
-const service = engine()
-service.register(userSearch)
+const service = engine(__dirname, "handlers")
 
 const server = express()
 

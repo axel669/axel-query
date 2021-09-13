@@ -1,9 +1,9 @@
 const engine = require("../index.js")
 
-const {userSearch, seqQuery, paraQuery} = require("./test.config.js")
+const {seqQuery, paraQuery} = require("./test.config.js")
 
-const service = engine()
-service.register(userSearch)
+const service = engine(__dirname, "handlers")
+console.log(service)
 
 const main = async () => {
     {
