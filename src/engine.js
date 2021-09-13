@@ -1,7 +1,10 @@
+const glob = require("glob")
+const path = require("path")
+
 const compile = require("./compile.js")
 
-const register = (functions, def) => {
-    const { name, args, func, ...value } = def
+const register = (functions, name, def) => {
+    const { args, func, ...value } = def
 
     functions[name] = {
         func,
@@ -10,13 +13,12 @@ const register = (functions, def) => {
     }
 }
 
-const executeQuery = async (functions, query) => {
-    const { call, args, value } = query
+const executeQuery = async (functions, call, query) => {
+    const { args, value } = query
     const valueForm = { value }
     const mod = functions[call]
 
     if (mod === undefined) {
-        // throw new Error(`Function '${call}' does not exist in the API`)
         return {
             error: `Function '${call}' does not exist in the API`
         }
@@ -30,7 +32,7 @@ const executeQuery = async (functions, query) => {
 
         mod.value.validate(queryValue)
 
-        return mod.value.mask(queryValue, valueForm)
+        return mod.value.mask(queryValue, valueForm).value
     }
     catch (err) {
         return {
@@ -41,26 +43,28 @@ const executeQuery = async (functions, query) => {
 }
 
 const executeSerial = async (functions, query) => {
-    const { sequence, exec } = query
-
     const response = {}
-    for (const name of sequence) {
-        const result = await executeQuery(functions, exec[name])
+    for (const queryItem of query) {
+        const [target] = Object.keys(queryItem)
+        const [name, call] = target.split(":")
+        const result = await executeQuery(functions, call, queryItem[target])
         response[name] = result
     }
 
     return response
 }
 const executeParallel = async (functions, query) => {
-    const { exec } = query
-    const names = Object.keys(exec)
+    const names = Object.keys(query)
 
     const results = await Promise.all(
         names.map(
-            async (name) => [
-                name,
-                await executeQuery(functions, exec[name])
-            ]
+            async (target) => {
+                const [name, call] = target.split(":")
+                return [
+                    name,
+                    await executeQuery(functions, call, query[target])
+                ]
+            }
         )
     )
 
@@ -73,20 +77,39 @@ const executeParallel = async (functions, query) => {
     )
 }
 
-const executeUserQuery = (functions, query) => {
-    if (query.sequence !== undefined) {
-        return executeSerial(functions, query)
-    }
+// const executeUserQuery = (functions, query) => {
+//     if (Array.isArray(query) === true) {
+//         return executeSerial(functions, query)
+//     }
 
-    return executeParallel(functions, query)
-}
+//     return executeParallel(functions, query)
+// }
 
-const engine = () => {
+const engine = (root, handlersDir) => {
+    const cwd = path.join(root, handlersDir)
+    const handlerList = glob.sync(`**/*.js`, { cwd })
+
     const functions = {}
 
+    for (const file of handlerList) {
+        const name = file.slice(0, -3).replace(/\//g, ".")
+        register(
+            functions,
+            name,
+            require(
+                path.join(cwd, file)
+            )
+        )
+    }
+
     return {
-        register: (def) => register(functions, def),
-        execute: (query) => executeUserQuery(functions, query)
+        execute: (query) => {
+            if (Array.isArray(query) === true) {
+                return executeSerial(functions, query)
+            }
+
+            return executeParallel(functions, query)
+        }
     }
 }
 

@@ -10,7 +10,9 @@
   },
   "author": "Axel",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "glob": "^7.1.7"
+  },
   "devDependencies": {
     "express": "^4.17.1",
     "koa": "^2.13.1",
