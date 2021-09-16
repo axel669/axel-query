@@ -18,7 +18,8 @@ const compile = (def) => {
         propList: (queryValue) => listProps(queryValue)
             .filter(prop => type[prop] !== undefined),
         typeInfo: () => type,
-        definition: () => def
+        definition: () => def,
+        toJSON: () => def
     }
 }
 
