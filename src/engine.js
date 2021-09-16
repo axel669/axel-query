@@ -25,6 +25,7 @@ const executeQuery = async (functions, call, query) => {
     }
 
     try {
+        mod.args.validate(args)
         const props = mod.value.propList(valueForm)
         const queryValue = {
             value: await mod.func(args, props)
@@ -37,7 +38,7 @@ const executeQuery = async (functions, call, query) => {
     catch (err) {
         return {
             error: err.message,
-            stack: err.stack
+            // stack: err.stack
         }
     }
 }
@@ -77,14 +78,6 @@ const executeParallel = async (functions, query) => {
     )
 }
 
-// const executeUserQuery = (functions, query) => {
-//     if (Array.isArray(query) === true) {
-//         return executeSerial(functions, query)
-//     }
-
-//     return executeParallel(functions, query)
-// }
-
 const engine = (root, handlersDir) => {
     const cwd = path.join(root, handlersDir)
     const handlerList = glob.sync(`**/*.js`, { cwd })
@@ -109,7 +102,8 @@ const engine = (root, handlersDir) => {
             }
 
             return executeParallel(functions, query)
-        }
+        },
+        docs: () => JSON.stringify(functions)
     }
 }
 
