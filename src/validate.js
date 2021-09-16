@@ -33,6 +33,9 @@ const validateArray = (array, typeInfo, name, nullableItems) => {
     }
 }
 const validate = (obj, typeInfo, parent = "") => {
+    if (typeof obj !== "object" || Array.isArray(obj)) {
+        throw new Error(`Invalid type for ${parent}`)
+    }
     for (const [key, value] of Object.entries(obj)) {
         const propName = `${parent}.${key}`
         const propInfo = typeInfo[propName]
