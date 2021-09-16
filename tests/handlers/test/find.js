@@ -12,11 +12,7 @@ const userSearch = {
         "pw": "string"
     },
     func: async (args, mask) => {
-        if (args.users !== undefined) {
-            return users.filter(
-                user => args.users.includes(user.user)
-            )
-        }
+        console.log(mask)
         return users.filter(
             user => user.user === args.user
         )

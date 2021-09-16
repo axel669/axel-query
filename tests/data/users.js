@@ -3,17 +3,17 @@ const users = [
         user: "axel",
         pw: "test",
         perms: [
-            "edit",
-            "save",
-            "delete"
+            { name: "edit"},
+            { name: "save"},
+            { name: "delete"},
         ]
     },
     {
         user: "test",
         pw: "nope",
         perms: [
-            "edit",
-            "save"
+            {name: "edit"},
+            {name: "save"},
         ]
     }
 ]
