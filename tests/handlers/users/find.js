@@ -8,8 +8,9 @@ const userSearch = {
         }
     },
     args: {
-        "user": "string",
-        "pw": "string"
+        "?user": "string",
+        "?users[]": "string",
+        "pw": "string",
     },
     func: async (args, mask) => {
         if (args.users !== undefined) {
