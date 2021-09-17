@@ -6,14 +6,15 @@ const typeInfo = (obj, parent = "") => {
         const longName = `${parent}.${name}`
 
         const nullable = key.startsWith("?")
-        const nullableArray = key.includes("[?]")
-        const array = nullableArray || key.includes("[]")
+        const nullableArray = key.endsWith("[?]")
+        const array = nullableArray || key.endsWith("[]")
         info[longName] = {
             name,
             nullable,
             array,
             nullableArray,
-            type: (typeof value === "string") ? value : null
+            type: (typeof value === "string") ? value : null,
+            top: parent === ""
         }
         const child = (typeof value === "object")
             ? typeInfo(value, longName)

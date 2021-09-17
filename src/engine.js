@@ -25,15 +25,16 @@ const executeQuery = async (functions, call, query) => {
     }
 
     try {
-        mod.args.validate(args)
+        const funcArgs = mod.args.filter(args)
+        mod.args.validate(funcArgs)
         const props = mod.value.propList(valueForm)
         const queryValue = {
-            value: await mod.func(args, props)
+            value: await mod.func(funcArgs, props)
         }
 
         mod.value.validate(queryValue)
 
-        return mod.value.mask(queryValue, valueForm).value
+        return mod.value.mask(queryValue, valueForm)
     }
     catch (err) {
         return {

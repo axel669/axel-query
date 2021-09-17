@@ -6,6 +6,8 @@ const validate = require("./validate.js")
 const compile = (def) => {
     const type = typeInfo(def)
 
+    const topLevel = Object.values(type).filter(i => i.top)
+
     return {
         validate: (data) => {
             validate(data, type)
@@ -19,7 +21,22 @@ const compile = (def) => {
             .filter(prop => type[prop] !== undefined),
         typeInfo: () => type,
         definition: () => def,
-        toJSON: () => def
+        toJSON: () => def,
+        filter: (args) => topLevel.reduce(
+            (newArgs, info) => {
+                const {name} = info
+                const value = args[name] ?? null
+
+                if (info.nullable === false && value === null) {
+                    throw new Error(
+                        `Argument '${name}' cannot be null`
+                    )
+                }
+                newArgs[name] = value
+                return newArgs
+            },
+            {}
+        )
     }
 }
 
