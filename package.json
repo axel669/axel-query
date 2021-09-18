@@ -21,8 +21,8 @@
     "node-fetch": "^2.6.1"
   },
   "files": [
-    "iquery/index.js",
-    "iquery/build",
+    "iquery/client/",
+    "iquery/path.js",
     "express/",
     "koa/",
     "src/",
