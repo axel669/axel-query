@@ -99,12 +99,14 @@ const engine = (root, handlersDir) => {
     return {
         execute: (query) => {
             if (Array.isArray(query) === true) {
+                if (query[0] === "docs") {
+                    return functions
+                }
                 return executeSerial(functions, query)
             }
 
             return executeParallel(functions, query)
-        },
-        docs: () => JSON.stringify(functions)
+        }
     }
 }
 
