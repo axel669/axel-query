@@ -1,6 +1,6 @@
 {
   "name": "axel-query",
-  "version": "0.1.1",
+  "version": "0.2.0-beta.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,8 @@
     "node-fetch": "^2.6.1"
   },
   "files": [
+    "iquery/index.js",
+    "iquery/build",
     "express/",
     "koa/",
     "src/",
