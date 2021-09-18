@@ -13,15 +13,12 @@
     import Docs from "./docs.svelte"
     import CodeDisplay from "./code-display.svelte"
 
+    import aq from "../../client"
+
     const wait = (time) => new Promise(
         resolve => setTimeout(resolve, time)
     )
-    const load = async () => {
-        const res = await fetch("/aqli")
-        const functions = await res.json()
-
-        return functions
-    }
+    const load = () => aq.run(["docs"])
 
     const functions = load()
 
@@ -32,7 +29,7 @@
         console.log("executing:", query)
         resultArea.writeText("Running query...")
         const res = await fetch(
-            "/aql",
+            "/aq",
             {
                 method: "POST",
                 headers: {
@@ -96,7 +93,7 @@
     <app-layout>
         <title-area>
             <TitleBar sticky>
-                Axel QueryI
+                Axel IQuery
 
                 <svelte:fragment slot="adornments">
                     <Adornment position="menu">
