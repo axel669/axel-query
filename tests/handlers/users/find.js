@@ -12,7 +12,8 @@ const userSearch = {
         "?users[]": "string",
         "pw": "string",
     },
-    func: async (args, mask) => {
+    func: async (args, context, mask) => {
+        console.log(context, mask)
         if (args.users !== undefined) {
             return users.filter(
                 user => args.users.includes(user.user)
