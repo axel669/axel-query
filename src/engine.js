@@ -4,6 +4,12 @@ const path = require("path")
 const compile = require("./compile.js")
 
 const register = (functions, name, def) => {
+    const [baseName] = name.split(".").slice(-1)
+
+    if (baseName.startsWith("$")) {
+        return
+    }
+
     const { args, func, ...value } = def
 
     functions[name] = {
