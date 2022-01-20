@@ -41,6 +41,14 @@ const paraQuery = {
             user: true,
         }
     },
+    "nulled:users.one": {
+        args: {
+            user: "hi"
+        },
+        value: {
+            user: true
+        }
+    }
 }
 
 module.exports = {

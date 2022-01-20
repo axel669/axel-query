@@ -108,3 +108,5 @@ axel-query.sublime-workspace
 *.sublime-workspace
 
 iquery/build/
+
+iquery/client/

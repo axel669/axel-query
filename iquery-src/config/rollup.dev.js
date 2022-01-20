@@ -13,20 +13,20 @@ import template from "./html-template.js"
 export default {
     input: "./src/main.js",
     output: {
-        file: `./build/app-d${Date.now()}.js`,
+        file: `${appInfo.output}/app-d${Date.now()}.js`,
         format: "iife",
     },
     plugins: [
-        del({ targets: "./build/*" }),
+        del({ targets: `${appInfo.output}/*` }),
         svelte(),
         simpleLocation,
         resolve(),
         commonjs(),
         html({
-            filename: "./build/index.html",
+            filename: `${appInfo.output}/index.html`,
             title: appInfo.name,
             template,
         }),
-        copy("static", "build")
+        copy("static", appInfo.output)
     ]
 }

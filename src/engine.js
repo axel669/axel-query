@@ -4,6 +4,12 @@ const path = require("path")
 const compile = require("./compile.js")
 
 const register = (functions, name, def) => {
+    const [baseName] = name.split(".").slice(-1)
+
+    if (baseName.startsWith("$")) {
+        return
+    }
+
     const { args, func, ...value } = def
 
     functions[name] = {
@@ -13,7 +19,7 @@ const register = (functions, name, def) => {
     }
 }
 
-const executeQuery = async (functions, call, query) => {
+const executeQuery = async (functions, call, query, context) => {
     const { args, value } = query
     const valueForm = { value }
     const mod = functions[call]
@@ -29,7 +35,7 @@ const executeQuery = async (functions, call, query) => {
         mod.args.validate(funcArgs)
         const props = mod.value.propList(valueForm)
         const queryValue = {
-            value: await mod.func(funcArgs, props)
+            value: await mod.func(funcArgs, context, props)
         }
 
         mod.value.validate(queryValue)
@@ -44,18 +50,23 @@ const executeQuery = async (functions, call, query) => {
     }
 }
 
-const executeSerial = async (functions, query) => {
+const executeSerial = async (functions, query, context) => {
     const response = {}
     for (const queryItem of query) {
         const [target] = Object.keys(queryItem)
         const [name, call] = target.split(":")
-        const result = await executeQuery(functions, call, queryItem[target])
+        const result = await executeQuery(
+            functions,
+            call,
+            queryItem[target],
+            context
+        )
         response[name] = result
     }
 
     return response
 }
-const executeParallel = async (functions, query) => {
+const executeParallel = async (functions, query, context) => {
     const names = Object.keys(query)
 
     const results = await Promise.all(
@@ -64,7 +75,7 @@ const executeParallel = async (functions, query) => {
                 const [name, call] = target.split(":")
                 return [
                     name,
-                    await executeQuery(functions, call, query[target])
+                    await executeQuery(functions, call, query[target], context)
                 ]
             }
         )
@@ -97,15 +108,15 @@ const engine = (root, handlersDir) => {
     }
 
     return {
-        execute: (query) => {
+        execute: (query, context) => {
             if (Array.isArray(query) === true) {
                 if (query[0] === "docs") {
                     return functions
                 }
-                return executeSerial(functions, query)
+                return executeSerial(functions, query, context)
             }
 
-            return executeParallel(functions, query)
+            return executeParallel(functions, query, context)
         }
     }
 }

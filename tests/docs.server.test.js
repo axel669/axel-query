@@ -14,7 +14,7 @@ server.use(express.json())
 
 server.post(
     "/aq",
-    aqExpress(service)
+    aqExpress(service, () => Date.now())
 )
 server.use(
     express.static(docsPath)

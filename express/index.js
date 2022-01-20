@@ -1,6 +1,6 @@
-const aqExpress = service =>
+const aqExpress = (service, context = () => {}) =>
     async (req, res) => {
-        const result = await service.execute(req.body)
+        const result = await service.execute(req.body, context())
 
         res.json(result)
     }

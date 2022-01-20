@@ -8,17 +8,11 @@ const userSearch = {
         }
     },
     args: {
-        "?user": "string",
-        "?users[]": "string",
-        "pw": "string",
+        "user": "string",
+        "pw": "string"
     },
-    func: async (args, context, mask) => {
-        console.log(context, mask)
-        if (args.users !== undefined) {
-            return users.filter(
-                user => args.users.includes(user.user)
-            )
-        }
+    func: async (args, mask) => {
+        console.log(mask)
         return users.filter(
             user => user.user === args.user
         )

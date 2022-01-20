@@ -10,8 +10,11 @@ const typeValidator = {
 
 const validateItem = (item, typeInfo, name) => {
     const propInfo = typeInfo[name]
-    if (propInfo.nullable === false && (item === null || item === undefined)) {
-        throw new Error(`Invalid: ${name}, null`)
+    if (item === null || item === undefined) {
+        if (propInfo.nullable === false) {
+            throw new Error(`Invalid: ${name}, null`)
+        }
+        return
     }
 
     if (propInfo.type === null) {

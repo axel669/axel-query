@@ -19,6 +19,19 @@ server.post(
 server.listen(
     1338,
     async () => {
+        const docResponse = await fetch(
+            "http://localhost:1338/aql",
+            {
+                method: "POST",
+                body: JSON.stringify(["docs"]),
+                headers: {
+                    "content-type": "application/json"
+                }
+            }
+        )
+
+        console.log(await docResponse.json())
+
         const response = await fetch(
             "http://localhost:1338/aql",
             {
