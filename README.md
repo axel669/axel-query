@@ -69,7 +69,14 @@ to generate the api.
 import aqEngine from "axel-query"
 
 //  Generates an api with "demo" and "nested.demo" functions
-const service = aqEngine(__dirname, "handlers")
+const service = aqEngine("handlers")
+```
+
+```javascript
+//  To use .mjs files with import/export
+import engine from "axel-query/esm.mjs"
+
+const service = engine("handlers")
 ```
 
 ### Resolver Structure
@@ -82,6 +89,21 @@ a function.
 
 ```javascript
 module.exports = {
+    "args": {
+        "?name": "string",
+        "count": "int"
+    },
+    "value[]": {
+        "name": "string",
+        "files[]": "string"
+    },
+    func: () => {}
+}
+```
+
+```javascript
+//  export structure for mjs version
+export default = {
     "args": {
         "?name": "string",
         "count": "int"

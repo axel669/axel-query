@@ -97,7 +97,6 @@ const engine = async (pattern, handlersDir, load) => {
         handlersDir
     )
     const handlerList = await glob(pattern, { cwd })
-    console.log(handlerList)
 
     const functions = {}
 
