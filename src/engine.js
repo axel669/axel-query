@@ -1,4 +1,5 @@
-const glob = require("glob")
+// const glob = require("glob")
+const glob = require("fast-glob")
 const path = require("path")
 
 const compile = require("./compile.js")
@@ -90,18 +91,22 @@ const executeParallel = async (functions, query, context) => {
     )
 }
 
-const engine = (root, handlersDir) => {
-    const cwd = path.join(root, handlersDir)
-    const handlerList = glob.sync(`**/*.js`, { cwd })
+const engine = async (pattern, handlersDir, load) => {
+    const cwd = path.resolve(
+        process.cwd(),
+        handlersDir
+    )
+    const handlerList = await glob(pattern, { cwd })
+    console.log(handlerList)
 
     const functions = {}
 
     for (const file of handlerList) {
-        const name = file.slice(0, -3).replace(/\//g, ".")
+        const name = file.replace(/\.m?js$/, "").replace(/\//g, ".")
         register(
             functions,
             name,
-            require(
+            await load(
                 path.join(cwd, file)
             )
         )

@@ -1,6 +1,6 @@
 const users = require("../../data/users")
 
-const userSearch = {
+module.exports = {
     "value[]": {
         "user": "string",
         "perms[]": {
@@ -33,5 +33,3 @@ const userSearch = {
         )
     }
 }
-
-module.exports = userSearch

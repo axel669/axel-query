@@ -2,10 +2,11 @@ const engine = require("../index.js")
 
 const {seqQuery, paraQuery} = require("./test.config.js")
 
-const service = engine(__dirname, "handlers")
-console.log(service)
+process.chdir(__dirname)
 
 const main = async () => {
+    const service = await engine("handlers")
+    console.log(service)
     {
         const response = await service.execute(["docs"])
 
