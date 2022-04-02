@@ -2,7 +2,7 @@ import url from "url"
 
 import engine from "./src/engine.js"
 
-export default function(handlers) {
+export default function(handlers, rpc = false) {
     return engine(
         "**/*.{mjs,js}",
         handlers,
@@ -11,6 +11,7 @@ export default function(handlers) {
                 url.pathToFileURL(file)
             )
             return source.default
-        }
+        },
+        rpc
     )
 }

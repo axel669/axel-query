@@ -12,7 +12,7 @@ const userSearch = {
         "pw": "string"
     },
     func: async (args, mask) => {
-        console.log(mask)
+        // console.log(mask)
         return users.filter(
             user => user.user === args.user
         )

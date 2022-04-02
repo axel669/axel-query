@@ -20,7 +20,7 @@ const register = (functions, name, def) => {
     }
 }
 
-const executeQuery = async (functions, call, query, context) => {
+const executeQuery = async (functions, call, query, context, rpc) => {
     const { args, value } = query
     const valueForm = { value }
     const mod = functions[call]
@@ -32,7 +32,7 @@ const executeQuery = async (functions, call, query, context) => {
     }
 
     try {
-        const funcArgs = mod.args.filter(args)
+        const funcArgs = mod.args.filter(rpc ? query : args)
         mod.args.validate(funcArgs)
         const props = mod.value.propList(valueForm)
         const queryValue = {
@@ -41,7 +41,7 @@ const executeQuery = async (functions, call, query, context) => {
 
         mod.value.validate(queryValue)
 
-        return mod.value.mask(queryValue, valueForm)
+        return mod.value.mask(queryValue, valueForm, rpc)
     }
     catch (err) {
         return {
@@ -51,7 +51,7 @@ const executeQuery = async (functions, call, query, context) => {
     }
 }
 
-const executeSerial = async (functions, query, context) => {
+const executeSerial = async (functions, query, context, rpc) => {
     const response = {}
     for (const queryItem of query) {
         const [target] = Object.keys(queryItem)
@@ -60,14 +60,15 @@ const executeSerial = async (functions, query, context) => {
             functions,
             call,
             queryItem[target],
-            context
+            context,
+            rpc
         )
         response[name] = result
     }
 
     return response
 }
-const executeParallel = async (functions, query, context) => {
+const executeParallel = async (functions, query, context, rpc) => {
     const names = Object.keys(query)
 
     const results = await Promise.all(
@@ -76,7 +77,13 @@ const executeParallel = async (functions, query, context) => {
                 const [name, call] = target.split(":")
                 return [
                     name,
-                    await executeQuery(functions, call, query[target], context)
+                    await executeQuery(
+                        functions,
+                        call,
+                        query[target],
+                        context,
+                        rpc
+                    )
                 ]
             }
         )
@@ -91,7 +98,7 @@ const executeParallel = async (functions, query, context) => {
     )
 }
 
-const engine = async (pattern, handlersDir, load) => {
+const engine = async (pattern, handlersDir, load, rpc) => {
     const cwd = path.resolve(
         process.cwd(),
         handlersDir
@@ -117,10 +124,10 @@ const engine = async (pattern, handlersDir, load) => {
                 if (query[0] === "docs") {
                     return functions
                 }
-                return executeSerial(functions, query, context)
+                return executeSerial(functions, query, context, rpc)
             }
 
-            return executeParallel(functions, query, context)
+            return executeParallel(functions, query, context, rpc)
         }
     }
 }

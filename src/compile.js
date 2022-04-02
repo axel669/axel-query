@@ -7,12 +7,17 @@ const compile = (def) => {
     const type = typeInfo(def)
 
     const topLevel = Object.values(type).filter(i => i.top)
+    const typeProps = Object.keys(type)
 
     return {
         validate: (data) => {
             validate(data, type)
         },
-        mask: (data, queryValue) => {
+        mask: (data, queryValue, rpc) => {
+            if (rpc === true) {
+                return mask(data, typeProps)
+            }
+            
             const props = listProps(queryValue)
                 .filter(prop => type[prop] !== undefined)
             return mask(data, props)
