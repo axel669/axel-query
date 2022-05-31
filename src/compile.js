@@ -15,12 +15,12 @@ const compile = (def) => {
         },
         mask: (data, queryValue, rpc) => {
             if (rpc === true) {
-                return mask(data, typeProps)
+                return mask(data, typeProps, type)
             }
-            
+
             const props = listProps(queryValue)
                 .filter(prop => type[prop] !== undefined)
-            return mask(data, props)
+            return mask(data, props, type)
         },
         propList: (queryValue) => listProps(queryValue)
             .filter(prop => type[prop] !== undefined),

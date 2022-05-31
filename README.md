@@ -22,7 +22,10 @@ The validator is either a string naming the validator to be used, or an object
 describing the structure of the value. Descriptor can be nested as much as
 needed to describe complex structures.
 
-Built in validators: `int`, `number`, `string`, `bool`
+Built in validators: `int`, `number`, `string`, `bool`, `unsafeAny`
+
+> The `unsafeAny` type can be used to not type check or property filter on a
+> value, use at your own risk.
 
 ```javascript
 //  regular string prop

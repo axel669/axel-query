@@ -6,6 +6,7 @@ const typeValidator = {
     "number": value => typeof value === "number",
     "string": value => typeof value === "string",
     "bool": value => typeof value === "boolean",
+    "unsafeAny": () => true,
 }
 
 const validateItem = (item, typeInfo, name) => {
@@ -21,7 +22,10 @@ const validateItem = (item, typeInfo, name) => {
         return validate(item, typeInfo, name)
     }
 
-    typeValidator[propInfo.type](item)
+    // console.log("validate", item, name, propInfo)
+    if (typeValidator[propInfo.type](item) === false) {
+        throw new Error(`${name} expected to be "${propInfo.type}": ${item}`)
+    }
 }
 const validateArray = (array, typeInfo, name, nullableItems) => {
     for (const item of array) {

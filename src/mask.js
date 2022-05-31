@@ -1,11 +1,14 @@
-const maskValue = (value, list, name) => {
+const maskValue = (value, list, type, name) => {
+    if (type[name]?.type === "unsafeAny") {
+        return value
+    }
     if (typeof value !== "object" || value === null || value === undefined) {
         return value
     }
 
-    return mask(value, list, name)
+    return mask(value, list, type, name)
 }
-const mask = (obj, list, parent = "") => {
+const mask = (obj, list, type, parent = "") => {
     const dest = {}
 
     for (const [key, value] of Object.entries(obj)) {
@@ -14,9 +17,9 @@ const mask = (obj, list, parent = "") => {
         if (list.includes(name) === true) {
             dest[key] = Array.isArray(value)
                 ? value.map(
-                    item => maskValue(item, list, name)
+                    item => maskValue(item, list, type, name)
                 )
-                : maskValue(value, list, name)
+                : maskValue(value, list, type, name)
         }
     }
 
